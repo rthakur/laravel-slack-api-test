@@ -19,8 +19,12 @@ Route::group(['prefix' => '/','middleware' => 'auth'], function () {
   Route::get('/', 'SlackController@index');
   
   Route::group(['prefix' => 'slack'], function(){
+    
     Route::get('connect', 'SlackAPIController@getConnect');
+    
     Route::get('disconnect/{id}', 'SlackController@disconnect');
+    
+    Route::get('users/{id}', 'SlackController@users');
   });
   
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\SlackTeam;
+use App\SlackTeamUsers;
 use Auth;
 
 class SlackAPIController extends Controller
@@ -59,6 +60,33 @@ class SlackAPIController extends Controller
     $slackTeam->team_name = $response['team_name'];
     $slackTeam->access_token = $response['access_token'];
     $slackTeam->save();
+    
+    $this->saveSlackTeamUsers($slackTeam);
+    
+  }
+  
+  
+  private function saveSlackTeamUsers($slackTeam)
+  {
+    $getdata = @file_get_contents('https://slack.com/api/users.list?token='.$slackTeam->access_token);
+    $getdata = json_decode($getdata, true);
+    
+    if(isset($getdata['members']) && is_array($getdata['members']))
+      
+      foreach ($getdata['members'] as $member) 
+      {
+        if($member['name'] == 'slackbot') continue;
+        
+        $slackuser = SlackTeamUsers::firstOrNew(['slack_team_id' => $slackTeam->id, 'slack_id' => $member['id']]);
+        $slackuser->name = $member['name'];
+        $slackuser->real_name = $member['real_name'];
+        $slackuser->tz = $member['tz'];
+        $slackuser->tz_label = $member['tz_label'];
+        $slackuser->tz_offset = $member['tz_offset'];
+        $slackuser->profile_image = isset($member['profile']['image_512'])? $member['profile']['image_512'] : '';
+        $slackuser->save();
+      }
+      
   }
   
 }

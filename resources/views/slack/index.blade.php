@@ -21,7 +21,7 @@
         <div class="ibox">
             <div class="ibox-title">
                 <div class="ibox-tools">
-                    <a href="https://slack.com/oauth/authorize?client_id={{ env('SLACK_CLIENT_ID') }}&scope=team:read&redirect_uri={{ env('SLACK_CLIENT_REDIRECT_URL')}}" class="btn btn-primary btn-xs">Connect Slack Account</a>
+                    <a href="https://slack.com/oauth/authorize?client_id={{ env('SLACK_CLIENT_ID') }}&scope=team:read,users:read&redirect_uri={{ env('SLACK_CLIENT_REDIRECT_URL')}}" class="btn btn-primary btn-xs">Connect Slack Account</a>
                 </div>
             </div>
             <div class="ibox-content">
@@ -37,13 +37,14 @@
                                 <small>Connect At: {{ $team->created_at->diffForHumans() }}</small>
                             </td>
                             <td class="project-people">
-                                <a href="/assets/"><img alt="image" class="img-circle" src="/assets/img/a3.jpg"></a>
-                                <a href="/assets/"><img alt="image" class="img-circle" src="/assets/img/a1.jpg"></a>
-                                <a href="/assets/"><img alt="image" class="img-circle" src="/assets/img/a2.jpg"></a>
-                                <a href="/assets/"><img alt="image" class="img-circle" src="/assets/img/a4.jpg"></a>
-                                <a href="/assets/"><img alt="image" class="img-circle" src="/assets/img/a5.jpg"></a>
+                              @if($team->getUsers)
+                                @foreach($team->getUsers->take(5) as $user)
+                                  <a href="#"><img title="{{ $user->real_name }}" alt="{{ $user->real_name }}" class="img-circle" src="{{ $user->profile_image }}"></a>
+                                @endforeach
+                              @endif  
                             </td>
                             <td class="project-actions">
+                                <a href="/slack/users/{{$team->id}}" class="btn btn-primary btn-sm"> View User Details </a>
                                 <a href="/slack/disconnect/{{$team->id}}" class="btn btn-default btn-sm"> Disconnect </a>
                             </td>
                         </tr>
@@ -55,7 +56,7 @@
             </div>
         </div>
         @else
-          <h3 class="text-center"> You have not connected any slack account yet, click here to <a href="https://slack.com/oauth/authorize?client_id={{ env('SLACK_CLIENT_ID') }}&scope=team:read&redirect_uri={{ env('SLACK_CLIENT_REDIRECT_URL')}}" class="btn btn-primary"> Connect to slack</a></h3>
+          <h3 class="text-center"> You have not connected any slack account yet, click here to <a href="https://slack.com/oauth/authorize?client_id={{ env('SLACK_CLIENT_ID') }}&scope=team:read,users:read&redirect_uri={{ env('SLACK_CLIENT_REDIRECT_URL')}}" class="btn btn-primary"> Connect to slack</a></h3>
         @endif 
     </div>
 </div>
