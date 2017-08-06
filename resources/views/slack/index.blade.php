@@ -34,11 +34,13 @@
                             <td class="project-title">
                                 <a href="#">{{$team->team_name}}</a>
                                 <br/>
-                                <small>Connect At: {{ $team->created_at->diffForHumans() }}</small>
+                                <small>Number of uers: {{ ($team->getUsers)? $team->getUsers->count() : '' }}</small>
+                                <br/>
+                                <small>Connect At: {{ $team->created_at->diffForHumans() }}</small><br>
                             </td>
                             <td class="project-people">
                               @if($team->getUsers)
-                                @foreach($team->getUsers->take(5) as $user)
+                                @foreach($team->getUsers->take(8) as $user)
                                   <a href="#"><img title="{{ $user->real_name }}" alt="{{ $user->real_name }}" class="img-circle" src="{{ $user->profile_image }}"></a>
                                 @endforeach
                               @endif  

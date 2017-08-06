@@ -75,14 +75,17 @@ class SlackAPIController extends Controller
       
       foreach ($getdata['members'] as $member) 
       {
-        if($member['name'] == 'slackbot') continue;
+        if($member['name'] == 'slackbot' ||  !isset($member['name'])) continue;
+        
+        $firstName = isset($member['profile']['first_name'])? $member['profile']['first_name'] : '';
+        $lastName = isset($member['profile']['last_name'])? $member['profile']['last_name'] : '';
         
         $slackuser = SlackTeamUsers::firstOrNew(['slack_team_id' => $slackTeam->id, 'slack_id' => $member['id']]);
         $slackuser->name = $member['name'];
-        $slackuser->real_name = $member['real_name'];
-        $slackuser->tz = $member['tz'];
-        $slackuser->tz_label = $member['tz_label'];
-        $slackuser->tz_offset = $member['tz_offset'];
+        $slackuser->real_name = $firstName .' '.$lastName;
+        $slackuser->tz = isset($member['tz'])? $member['tz'] : '';
+        $slackuser->tz_label = isset($member['tz_label'])? $member['tz_label'] : '';
+        $slackuser->tz_offset = isset($member['tz_offset'])? $member['tz_offset'] : '';
         $slackuser->profile_image = isset($member['profile']['image_512'])? $member['profile']['image_512'] : '';
         $slackuser->save();
       }
