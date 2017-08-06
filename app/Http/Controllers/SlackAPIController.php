@@ -19,7 +19,7 @@ class SlackAPIController extends Controller
                   'client_id' => env('SLACK_CLIENT_ID'),
                   'client_secret' => env('SLACK_CLIENT_SECRET'),
                   'code' => $authCode,
-                  'redirect_uri' => 'http://testslack.app/slack/connect'
+                  'redirect_uri' => env('SLACK_CLIENT_REDIRECT_URL')
                   );
                   
         $data_string = http_build_query($data);
